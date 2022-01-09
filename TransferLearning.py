@@ -10,7 +10,7 @@ class_names = np.array(
     sorted([item.name for item in train_dir.glob('*')]))  # created a list of class_names from the subdirectories
 print(class_names)
 
-# Trainingsdaten vorbereiten
+# Prepare training data
 train_datagen_augmented = ImageDataGenerator(rescale=1 / 255.,
                                              validation_split=0.2,
                                              rotation_range=0.2,  # rotate the image slightly
@@ -40,16 +40,18 @@ resnet_url = "https://tfhub.dev/google/imagenet/resnet_v2_50/feature_vector/4"
 # EfficientNet0 feature vector
 efficientnet_url = "https://tfhub.dev/tensorflow/efficientnet/b0/feature-vector/1"
 
+# Create model
 model2 = create_model(resnet_url, 2)
-
 model2.compile(loss='categorical_crossentropy', optimizer=tf.keras.optimizers.Adam(), metrics=['accuracy'])
 
+# Fit model
 history2 = model2.fit(train_data_augmented,
                       epochs=4,
                       steps_per_epoch=len(train_data_augmented),
                       validation_data=validation_data_augmented,
                       validation_steps=len(validation_data_augmented))
 
+# Save model
 np.save('Auswertung/history_model_2.npy', history2.history)
 model2.save('Auswertung/model2')
 

@@ -84,6 +84,7 @@ history3 = model3.fit(train_data,
                                  # Go through less of the validation data so epochs are faster (we want faster experiments!)
                                  validation_steps=len(val_data))
 
+#Save the model
 np.save('Auswertung/history_model_3.npy', history3.history)
 model3.save('Auswertung/model3')
 

@@ -16,14 +16,14 @@ class_names = np.array(
     sorted([item.name for item in train_dir.glob('*')]))  # created a list of class_names from the subdirectories
 print(class_names)
 
-# Zeige ein zufälliges Bild jeder Klasse
+# Show a random picture of each class
 img = view_random_image(target_dir="train/",
                         target_class="cats")
 
 img = view_random_image(target_dir="train/",
                         target_class="dogs")
 
-# Trainingsdaten vorbereiten
+# Prepare training data
 train_datagen_augmented = ImageDataGenerator(rescale=1 / 255.,
                                              validation_split=0.2,
                                              rotation_range=0.2,  # rotate the image slightly
@@ -47,7 +47,7 @@ validation_data_augmented = train_datagen_augmented.flow_from_directory(train_di
                                                                         shuffle=True,
                                                                         subset='validation')
 
-# Visualisieren
+# Visualize
 augmented_images, augmented_labels = train_data_augmented.next()
 # Show original image and augmented image
 random_number = random.randint(0, 32)  # we're making batches of size 32, so we'll get a random instance
@@ -58,7 +58,7 @@ plt.axis(False);
 plt.show();
 print(f"Image shape: {img.shape}")
 
-# Model erzeugen
+# Create model
 model_1 = tf.keras.Sequential([
     tf.keras.layers.Conv2D(10, 3, activation='relu', input_shape=(224, 224, 3)),  # same input shape as our images
     tf.keras.layers.Conv2D(10, 3, activation='relu'),
@@ -77,6 +77,7 @@ model_1.compile(loss="binary_crossentropy",
                 optimizer=tf.keras.optimizers.Adam(),
                 metrics=["accuracy"])
 
+# Create callbacks
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2,
                                        patience=3, min_lr=0.001)
 
@@ -98,6 +99,7 @@ history_1 = model_1.fit(train_data_augmented,
                         validation_steps=len(validation_data_augmented),
                         callbacks=[reduce_lr, earlyStopping])
 
+# Save the model
 np.save('Auswertung/history_model_dropout.npy', history_1.history)
 model_1.save('Auswertung/model1_dropout')
 
